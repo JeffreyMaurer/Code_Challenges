@@ -1,4 +1,5 @@
 // Meant to replace the python version of this code for possible speedup.
+// unfinished
 
 #include<iostream>
 #include<vector>
