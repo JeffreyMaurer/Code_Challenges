@@ -1,0 +1,6 @@
+cpp_n2queens.sh: base. works. slow. makes all of the subsets again and again.
+cpp_n2queens2.sh: good subset. faster 19: ~37
+n2queens3b.sh: optimized, tells time. faster. 19: 9.61517
+n2queens4b.sh: changed bit shift to add and subtract, no upper limit
+n2queens5b.sh: even more subsetting
+
