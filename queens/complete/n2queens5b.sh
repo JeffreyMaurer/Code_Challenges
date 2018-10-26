@@ -1,3 +1,5 @@
+# This is all a prototype for partial. See partial directory.
+
 set -x
 
 make n2queens5.exe
