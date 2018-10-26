@@ -1,3 +1,5 @@
+// Meant to replace the python version of this code for possible speedup.
+
 #include<iostream>
 #include<vector>
 #include<list>
