@@ -1,0 +1,1 @@
+It takes a very long time to calculate the number of solutions for an n2queens problem. However, we can get a lower bound by solving for only the the csolutions that  have a strict linear pattern to them.
