@@ -1,1 +1,3 @@
-It takes a very long time to calculate the number of solutions for an n2queens problem. However, we can get a lower bound by solving for only the the csolutions that have a strict linear pattern to them.
+It takes a very long time to calculate the number of solutions for an n2queens problem. However, we can get a lower bound by solving for only the the solutions that have a strict linear pattern to them. This speeds up computation so much that calculations for a 53x53x53 3D chessboard can be solved in a reasonable amount of time on a pentium Sandy Bridge processor.
+
+We see that when n=29, the number of solutions calculated from a depth first search of all possibilities of linear 2D boards excedes the number of solutions found when only considering a boards in a linear fashion here. Thus, we know that calculations here yield only a lower bound.
