@@ -1,3 +1,7 @@
+"""
+This python script compresses the boards into the smallest representation down to the bit level.
+"""
+
 import sys
 
 filename = sys.argv[1]
