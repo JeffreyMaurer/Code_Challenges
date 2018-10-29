@@ -226,23 +226,3 @@ for matchup in Q:
     print(matchup)
     print(Q[matchup])
 
-# Two Pokemon Teams
-p = [Pokemon("GREEN"), Pokemon("BLUE")]
-q = [Pokemon("RED"), Pokemon("GREEN")]
-
-
-def logic(team1, team2):
-    pass
-
-
-def view():
-    pass
-
-
-done = False
-while (done):
-    logic(p, q)
-    view()
-
-
-
