@@ -180,7 +180,7 @@ record = []
 e = 1.0
 y = 0.9
 print(Q)
-for epoch in range(0):
+for epoch in range(1000):
     # Initialize battle
     p = Pokemon(random.choice(types), "Q", Q)
     q = Pokemon(random.choice(types), "Q", Q)
@@ -205,16 +205,16 @@ for epoch in range(0):
         # Perform action
         freward = faster.attack(slower, fa)
         # Get reward
-        Q[(slower.type, faster.type)][fa] += freward + y * max(Q[(slower.type, faster.type)], key=Q[(slower.type, faster.type)].get)# state hasn't changed...
+        Q[(slower.type, faster.type)][fa] += freward #+ y * max(Q[(slower.type, faster.type)], key=Q[(slower.type, faster.type)].get)# state hasn't changed...
         # Q[(faster.type, slower.type)][sa] -= freward  # state hasn't changed... # No penalty for a move that wasn't able to be made
         if slower.stats["HP"] == 0:
             break
         # Perform action
         sreward = slower.attack(faster, sa)
         # Get reward
-        Q[(faster.type, slower.type)][sa] += sreward  # state hasn't changed...
+        Q[(faster.type, slower.type)][sa] += sreward - freward # state hasn't changed...
         Q[(slower.type, faster.type)][fa] -= sreward  # state hasn't changed...
-    e -= 0.01 # too high and it won't explore with the even matchups
+    e *= 0.99 # too high and it won't explore with the even matchups
     if p.stats["HP"] == 0:
         print(q.type, "wins")
     else:
