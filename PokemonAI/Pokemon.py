@@ -42,7 +42,7 @@ attacks = {
     },
 "OLIVE": {
     "POWER": 5,
-    "TYPE": "BLUE"
+    "TYPE": "GREEN"
     }
 }
 
