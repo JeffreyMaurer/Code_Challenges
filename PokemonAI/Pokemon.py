@@ -8,7 +8,7 @@ base_stats = {
     {
     "HP": 100,
     "ATT": 100,
-    "DEF": 75,
+    "DEF": 100,
     "SPD": 100
     },
 "BLUE":
@@ -50,7 +50,6 @@ base_attacks = {"RED": "SANGUINE",
                 "BLUE": "NAVY",
                 "GREEN": "OLIVE"}
 
-
 class Pokemon:
 
     def __init__(self, type, brain="RANDOM", Q=None):
@@ -64,8 +63,6 @@ class Pokemon:
         this_attack = attacks[which_attack]
         # Base
         damage = this_attack["POWER"] * self.stats["ATT"] / enemy.stats["DEF"]
-        # Base, ensure never 0 damage
-        damage += 2
         # Random
         damage *= random.randrange(85, 101) / 100
         # STAB
@@ -73,6 +70,8 @@ class Pokemon:
         # Effectiveness
 #        damage *= 0.5 if this_attack["TYPE"] == enemy.type else 1
         # Critical
+        # Base, ensure never 0 damage
+        damage += 2
         # Deal the damage
         lost = enemy.take_damage(damage)
         return(lost)
