@@ -50,6 +50,17 @@ class NeuralNetwork:
     learning_rate = 0.01
 
     def __init__(self, HyperParams, nonlin=sigmoid):
+    """
+    description: This initializes the network's architecture, weights and name.
+    params:
+        HyperParams: iterable of integers, signifying how many nodes in each layer
+        nonlin: the activation function to use for all layers
+    modified:
+        self.synapses: a list of numpy matrices, the weights of the network
+        self.score: number, the networks's "fitness" (used for genetic algorithm)
+        self.name: integer, the identity of the network
+        self.nonlin: the network's activation function
+    """
         self.synapses = []
         for synapse in range(len(HyperParams)-1):
             self.synapses.append(2*np.random.random((HyperParams[synapse], HyperParams[synapse+1]))-1)
