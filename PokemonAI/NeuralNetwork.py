@@ -55,6 +55,8 @@ class NeuralNetwork:
     params:
         HyperParams: iterable of integers, signifying how many nodes in each layer
         nonlin: the activation function to use for all layers
+    output: 
+        self: the neural network
     modified:
         self.synapses: a list of numpy matrices, the weights of the network
         self.score: number, the networks's "fitness" (used for genetic algorithm)
@@ -68,6 +70,54 @@ class NeuralNetwork:
         self.name = str(NeuralNetwork.next_ID)
         NeuralNetwork.next_ID += 1
         self.nonlin=nonlin
+        
+    def feed(self, state):
+    """
+    description: This is the main function of the neural network, it produces output from input
+    params:
+        state: a numpy vector or matrix of floats or integers
+    output: 
+        self.layers[-1]: a numpy vector or matrix of floats, the final output of the network
+    modified:
+        self.layers: a list of numpy vectors or matrices of numbers, the input and output of each layer
+    """
+        self.layers = []
+        self.layers.append(state)
+        for j in range(len(self.synapses)):
+            self.layers.append(self.nonlin(np.dot(self.layers[-1], self.synapses[j])))
+        return(self.layers[-1])
+
+    def backprop(self, error):
+    """
+    description: This is the second main function of the neural network, for training of single examples at a time
+    params:
+        error: a numpy vector of floats or integers, the difference between the 
+        actual output of feed and the desired output
+    output: 
+        None
+    modified:
+        self.synapses: a list of numpy vectors or matrices of numbers, the weights between each layer
+    """
+        for j in range(1,1+len(self.synapses)):
+            delta = error * self.nonlin(self.layers[-j], True)
+            error = delta.dot(self.synapses[-j].T)
+            self.synapses[-j] += NeuralNetwork.learning_rate*np.outer(self.layers[-(j+1)].T, delta)
+
+    def backprop_batch(self, error):
+    """
+    description: This is the second main function of the neural network, for training of batches
+    params:
+        error: a numpy matrix of floats or integers, the difference between the 
+        actual output of feed and the desired output
+    output: 
+        None
+    modified:
+        self.synapses: a list of numpy vectors or matrices of numbers, the weights between each layer
+    """
+        for j in range(1,1+len(self.synapses)):
+            delta = error * self.nonlin(self.layers[-j], True)
+            error = delta.dot(self.synapses[-j].T)
+            self.synapses[-j] += self.layers[-(j+1)].T.dot(delta)
 
 
     def train_batch(self, state, outcome, epoch = 10*1000):
@@ -122,25 +172,6 @@ class NeuralNetwork:
         #Q[np.arange(len(replays)), vector_actions] = rewards * attack_freq[matrix_actions] / sum(attack_freq) # + y * max(np.multiply(Q.feed(state), mask))
         #self.backprop_batch(Q)
         pass
-
-    def feed(self, state):
-        self.layers = []
-        self.layers.append(state)
-        for j in range(len(self.synapses)):
-            self.layers.append(self.nonlin(np.dot(self.layers[-1], self.synapses[j])))
-        return(self.layers[-1])
-
-    def backprop(self, error):
-        for j in range(1,1+len(self.synapses)):
-            delta = error * self.nonlin(self.layers[-j], True)
-            error = delta.dot(self.synapses[-j].T)
-            self.synapses[-j] += NeuralNetwork.learning_rate*np.outer(self.layers[-(j+1)].T, delta)
-
-    def backprop_batch(self, error):
-        for j in range(1,1+len(self.synapses)):
-            delta = error * self.nonlin(self.layers[-j], True)
-            error = delta.dot(self.synapses[-j].T)
-            self.synapses[-j] += self.layers[-(j+1)].T.dot(delta)
 
     def next_gen(self):
         child = NeuralNetwork([1])
