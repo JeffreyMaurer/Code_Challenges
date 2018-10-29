@@ -1,6 +1,12 @@
 import random
 import numpy as np
 
+"""
+In this section, there will be a few different nonlinear functions to choose from.
+They all have two params: x, which is a scalar, vector, matrix or tensor; and a boolean
+for whether we are finding the derivative at that point or not. The default for deriv is False.
+"""
+
 def sigmoid(x, deriv=False):
     if (deriv==True):
         return x * (1-x)
@@ -10,14 +16,14 @@ def sigmoid(x, deriv=False):
 def relu(x, deriv=False):
     z = np.array(x)
     z[z<0] = 0
-#    z = z/np.abs(np.max(z))
+    z = z/np.abs(np.max(z))
     if (deriv==True):
         z[z>0] = 1
     return z
 
 def leaky_relu(x, deriv=False):
     z = np.array(x)
-#    z = z/np.abs(np.max(z))
+    z = z/np.abs(np.max(z))
     z[z<0] *= 0.01
     if (deriv==True):
         z[z>0] = 1
@@ -35,6 +41,10 @@ def softplus(x, deriv=False):
 # np.random.seed(1)
 
 class NeuralNetwork:
+    """
+    This class describes a fully connected feed-forward neural network that is 
+    capable of updating weights through backpropagation and genetic algorithms.
+    """
 
     next_ID = 0
     learning_rate = 0.01
