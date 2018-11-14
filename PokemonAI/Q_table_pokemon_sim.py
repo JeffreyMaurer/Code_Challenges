@@ -171,16 +171,16 @@ player_type = ["RED", "GREEN", "BLUE"]
 enemy_type = ["RED", "GREEN", "BLUE"]
 Q = {}
 state_values = [(e, p) for e in enemy_type for p in player_type]
+lr = 0.1
 for state in state_values:
     Q[state] = {}
     for a in ["TACKLE", base_attacks[state[1]]]:
         Q[state][a] = 0
 # Train Q
 record = []
-e = 1.0
-y = 0.9
+e = 3.0
 print(Q)
-for epoch in range(1000):
+for epoch in range(1000*50):
     # Initialize battle
     p = Pokemon(random.choice(types), "Q", Q)
     q = Pokemon(random.choice(types), "Q", Q)
@@ -203,17 +203,16 @@ for epoch in range(1000):
         print(faster.type, slower.type)
         print(fa, sa)
         # Perform action
-        freward = faster.attack(slower, fa)
-        # Get reward
-        Q[(slower.type, faster.type)][fa] += freward #+ y * max(Q[(slower.type, faster.type)], key=Q[(slower.type, faster.type)].get)# state hasn't changed...
-        # Q[(faster.type, slower.type)][sa] -= freward  # state hasn't changed... # No penalty for a move that wasn't able to be made
-        if slower.stats["HP"] == 0:
-            break
-        # Perform action
-        sreward = slower.attack(faster, sa)
-        # Get reward
-        Q[(faster.type, slower.type)][sa] += sreward - freward # state hasn't changed...
-        Q[(slower.type, faster.type)][fa] -= sreward  # state hasn't changed...
+        slower_HP_lost = faster.attack(slower, fa)
+        faster_reward = slower_HP_lost
+        if slower.stats["HP"] > 0:
+            # Perform action
+            faster_HP_lost = slower.attack(faster, sa)
+            # Get reward
+            slower_reward = faster_HP_lost - slower_HP_lost
+            faster_reward = slower_HP_lost - faster_HP_lost
+            Q[(faster.type, slower.type)][sa] += lr * (slower_reward - Q[(faster.type, slower.type)][sa])# state hasn't changed...
+        Q[(slower.type, faster.type)][fa] += lr * (faster_reward - Q[(slower.type, faster.type)][fa])  # state hasn't changed...
     e *= 0.99 # too high and it won't explore with the even matchups
     if p.stats["HP"] == 0:
         print(q.type, "wins")
