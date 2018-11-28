@@ -29,26 +29,34 @@ base_stats = {
 
 attacks = {
 "TACKLE": {
-    "POWER": 5,
+    "POWER": 10,
     "TYPE": "NORMAL"
     },
 "SANGUINE": {
-    "POWER": 5,
+    "POWER": 10,
     "TYPE": "RED"
     },
 "NAVY": {
-    "POWER": 5,
+    "POWER": 10,
     "TYPE": "BLUE"
     },
 "OLIVE": {
-    "POWER": 5,
+    "POWER": 10,
     "TYPE": "GREEN"
     }
 }
 
+""",
+"SWORDS DANCE": {
+    "POWER": 0,
+    "TYPE": "NORMAL"
+    }
+"""
+
 base_attacks = {"RED": "SANGUINE",
                 "BLUE": "NAVY",
                 "GREEN": "OLIVE"}
+
 
 class Pokemon:
 
@@ -56,32 +64,42 @@ class Pokemon:
         self.type = type
         self.stats = copy.deepcopy(base_stats[type])
         self.attacks = ["TACKLE", base_attacks[type]]
+        """, "SWORDS DANCE" """
+        self.boost = copy.deepcopy(base_stats[type])
+        for stat in self.boost:
+            self.boost[stat] = 1
         self.brain = brain
         self.Q = Q
 
     def attack(self, enemy, which_attack):
+        if which_attack == "SWORDS DANCE":
+            self.boost["ATT"] = 2
+            return(0)
         this_attack = attacks[which_attack]
         # Base
-        damage = this_attack["POWER"] * self.stats["ATT"] / enemy.stats["DEF"]
+        damage = this_attack["POWER"] * self.boost["ATT"] * self.stats["ATT"] / enemy.stats["DEF"]
+        # Base, ensure never 0 damage
+        damage += 2
         # Random
         damage *= random.randrange(85, 101) / 100
         # STAB
         damage *= 1.5 if this_attack["TYPE"] == self.type else 1
         # Effectiveness
-#        damage *= 0.5 if this_attack["TYPE"] == enemy.type else 1
+        damage *= 0.5 if this_attack["TYPE"] == enemy.type else 1
         # Critical
-        # Base, ensure never 0 damage
-        damage += 2
         # Deal the damage
-        lost = enemy.take_damage(damage)
-        return(lost)
+        faint = enemy.take_damage(damage)
+        return(faint)
 
     def take_damage(self, damage):
         lost = damage / base_stats[self.type]["HP"]
         self.stats["HP"] -= damage
         if (self.stats["HP"] < 0):
             self.stats["HP"] = 0
-        return(lost)
+        if self.stats["HP"] == 0:
+            return(1)
+        else:
+            return(0)
 
     def choose_attack(self, choice=None, state=None, epsilon=0):
         if choice is not None:
@@ -104,3 +122,7 @@ class Pokemon:
 if __name__ == '__main__':
     p = Pokemon("GREEN")
     print(p)
+    print(p.boost)
+    q = Pokemon("BLUE")
+    p.attack(q, "SWORDS DANCE")
+    print(p.boost)
