@@ -201,7 +201,6 @@ class NeuralNetwork:
             attack_indices = np.array([r[1] for r in replay_sample])
             rewards = np.array([r[2] for r in replay_sample])
             next_states = np.array([r[3] for r in replay_sample])
-            # Q(s,a) = r + γ(max(Q(s’,a’))
             Q_values = self.feed(states)
             next_Q_values = self.feed(next_states)
             target_Q_values = next_Q_values if target is self else target.feed(next_states)
